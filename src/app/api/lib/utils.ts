@@ -1,7 +1,7 @@
 import { hashString, removeIpfsPrefix } from "@/lib/helpers";
 import { ethers } from "ethers";
 import { PinataSDK } from "pinata-web3";
-import { Metadata } from "../resolveName/types";
+import { Metadata } from "./types";
 
 export function createResponse(body: any, status: number): Response {
   return new Response(JSON.stringify(body), {

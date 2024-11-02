@@ -8,14 +8,14 @@ import {
   extractParams,
   fetchMetadata,
   isAuthorized,
-} from "../resolveName1/utils";
+} from "../lib/utils";
 
 const chains = {
   1: "eth",
   56: "bsc",
-  137: "matic",
-  42161: "arb",
+  137: "polygon",
   43114: "avax",
+  42161: "arb",
 };
 
 export async function GET(req: Request): Promise<Response> {
@@ -55,7 +55,7 @@ export async function GET(req: Request): Promise<Response> {
     });
 
     const metadata = await fetchMetadata(tokenUri);
-    console.log(metadata.foreignAddresses[chains[parsedChainId]]);
+    console.log(metadata);
 
     try {
       const metadataAddress =

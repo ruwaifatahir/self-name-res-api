@@ -19,5 +19,5 @@ export default function Home() {
     };
     run();
   }, []);
-  return <></>;
+  return <div className="">Hello</div>;
 }
