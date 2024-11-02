@@ -26,11 +26,10 @@ export function extractParams(
   return params;
 }
 
-export const authorizedApiKeys: string[] = (
-  process.env.AUTHORIZED_API_KEYS || ""
-).split(",");
-
 export function isAuthorized(apiKey: string | null): boolean {
+  const authorizedApiKeys: string[] = (
+    process.env.AUTHORIZED_API_KEYS || ""
+  ).split(",");
   return apiKey !== null && authorizedApiKeys.includes(apiKey);
 }
 
