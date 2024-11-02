@@ -19,10 +19,10 @@ const chains = {
 };
 
 export async function GET(req: Request): Promise<Response> {
-  const apiKey = req.headers.get("x-api-key");
-  // if (!isAuthorized(apiKey)) {
-  //   return createResponse({ error: "Unauthorized" }, 401);
-  // }
+  const apiKey = req.headers.get("authorization");
+  if (!isAuthorized(apiKey)) {
+    return createResponse({ error: "Unauthorized" }, 401);
+  }
 
   const { name, chainId } = extractParams(new URL(req.url), [
     "name",

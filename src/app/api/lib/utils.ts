@@ -1,5 +1,4 @@
-import { hashString, removeIpfsPrefix } from "@/lib/helpers";
-import { ethers } from "ethers";
+import { removeIpfsPrefix } from "@/lib/helpers";
 import { PinataSDK } from "pinata-web3";
 import { Metadata } from "./types";
 
@@ -9,7 +8,7 @@ export function createResponse(body: any, status: number): Response {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET",
-      "Access-Control-Allow-Headers": "Content-Type, x-api-key",
+      "Access-Control-Allow-Headers": "Content-Type, authorization",
       "Content-Type": "application/json",
     },
   });
