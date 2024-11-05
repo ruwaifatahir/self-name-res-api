@@ -3,12 +3,9 @@ import { bsc } from "viem/chains";
 import { BSC_RPC_URL, SELF_NFT_ADDRESS } from "@/lib/constants";
 import { selfNftAbi } from "@/lib/abi/self-nft-abi";
 import { hashString } from "@/lib/helpers";
-import {
-  createResponse,
-  extractParams,
-  fetchMetadata,
-  isAuthorized,
-} from "../lib/utils";
+import { NextResponse } from "next/server";
+import { extractParams, fetchMetadata } from "../lib/utils";
+import { isAuthorized } from "../lib/utils";
 
 const chains = {
   1: "eth",
@@ -18,10 +15,30 @@ const chains = {
   42161: "arb",
 };
 
-export async function GET(req: Request): Promise<Response> {
+export const runtime = "edge";
+
+export async function OPTIONS(req: Request) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
+
+export async function GET(req: Request): Promise<NextResponse> {
   const apiKey = req.headers.get("authorization");
   if (!isAuthorized(apiKey)) {
-    return createResponse({ error: "Unauthorized" }, 401);
+    return NextResponse.json({ error: "Unauthorized" }, {
+      status: 401,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   }
 
   const { name, chainId } = extractParams(new URL(req.url), [
@@ -31,7 +48,14 @@ export async function GET(req: Request): Promise<Response> {
   const parsedChainId = parseInt(chainId || "") as keyof typeof chains;
 
   if (!name || isNaN(parsedChainId)) {
-    return createResponse({ error: "Name and valid chainId required" }, 400);
+    return NextResponse.json({ error: "Name and valid chainId required" }, {
+      status: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   }
 
   try {
@@ -60,12 +84,31 @@ export async function GET(req: Request): Promise<Response> {
     try {
       const metadataAddress =
         metadata.foreignAddresses[chains[parsedChainId]].address;
-      return createResponse({ address: metadataAddress }, 200);
+      return NextResponse.json({ address: metadataAddress }, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      });
     } catch (error) {
-      return createResponse({ address: resolvedAddress }, 200);
+      return NextResponse.json({ address: resolvedAddress }, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      });
     }
   } catch (error) {
     console.error("Error resolving name:", error);
-    return createResponse({ error: "Internal Server Error" }, 500);
+    return NextResponse.json({ error: "Internal Server Error" }, {
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   }
 }
